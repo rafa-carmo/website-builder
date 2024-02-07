@@ -123,11 +123,11 @@ export function AgencyDetails({ data }: AgencyDetailsProps) {
 			const newUserData = await initUser({
 				role: "AGENCY_OWNER",
 			})
-			if (!data?.customerId) return
+			// if (!data?.customerId) return
 
 			const response = await upsertAgency({
 				id: data?.id ? data.id : v4(),
-				customerId: data?.customerId,
+				customerId: "0",
 				address: values.address,
 				agencyLogo: values.agencyLogo,
 				city: values.city,
