@@ -370,3 +370,68 @@ export async function upsertSubAccount(subAccount: SubAccount) {
 	})
 	return response
 }
+
+export async function getUserDetails(userEmail: string) {
+	return await db.user.findUnique({
+		where: {
+			email: userEmail,
+		},
+	})
+}
+
+export async function getAgencyDetails(agencyId: string) {
+	return await db.agency.findUnique({
+		where: {
+			id: agencyId,
+		},
+		include: {
+			SubAccount: true,
+		},
+	})
+}
+
+export async function getUserPermissions(userId: string) {
+	const response = await db.user.findUnique({
+		where: { id: userId },
+		select: { Permissions: { include: { SubAccount: true } } },
+	})
+
+	return response
+}
+
+export async function updateUser(user: Partial<User>) {
+	const response = await db.user.update({
+		where: { email: user.email },
+		data: { ...user },
+	})
+
+	await clerkClient.users.updateUserMetadata(response.id, {
+		privateMetadata: {
+			role: user.role || "SUBACCOUNT_USER",
+		},
+	})
+
+	return response
+}
+
+export async function changeUserPermissions(
+	permissionId: string | undefined,
+	userEmail: string,
+	subAccountId: string,
+	permission: boolean,
+) {
+	try {
+		const response = await db.permissions.upsert({
+			where: { id: permissionId },
+			update: { access: permission },
+			create: {
+				access: permission,
+				email: userEmail,
+				subAccountId: subAccountId,
+			},
+		})
+		return response
+	} catch (error) {
+		console.log("🔴Could not change persmission", error)
+	}
+}

@@ -16,6 +16,7 @@ import {
 	SheetTrigger,
 } from "../ui/sheet"
 import { Switch } from "../ui/switch"
+import { ModeToggle } from "./model-toggle"
 
 interface InfoBarProps {
 	notifications: NotificationWithUser | []
@@ -116,6 +117,7 @@ export function InfoBar({
 							)}
 						</SheetContent>
 					</Sheet>
+					<ModeToggle />
 				</div>
 			</div>
 		</>
