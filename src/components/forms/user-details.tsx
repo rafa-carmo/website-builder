@@ -52,8 +52,8 @@ import { useToast } from "../ui/use-toast"
 interface UserDetailsProps {
 	id: string | null
 	type: "agency" | "subaccount"
-	subAccounts: SubAccount[]
-	userData: Partial<User>
+	subAccounts?: SubAccount[]
+	userData?: Partial<User>
 }
 
 export function UserDetails({

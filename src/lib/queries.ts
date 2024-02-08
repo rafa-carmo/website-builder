@@ -2,7 +2,7 @@
 
 import { access } from "fs"
 import { clerkClient, currentUser } from "@clerk/nextjs"
-import { Agency, Plan, SubAccount, User } from "@prisma/client"
+import { Agency, Plan, Role, SubAccount, User } from "@prisma/client"
 import { redirect } from "next/navigation"
 import { v4 } from "uuid"
 import { db } from "./db"
@@ -452,6 +452,75 @@ export async function deleteSubaccount(subaccountId: string) {
 			id: subaccountId,
 		},
 	})
+
+	return response
+}
+
+export async function getTeamUsers(agencyId: string) {
+	const response = await db.user.findMany({
+		where: {
+			agencyId: agencyId,
+		},
+		include: {
+			Agency: {
+				include: {
+					SubAccount: true,
+				},
+			},
+			Permissions: {
+				include: {
+					SubAccount: true,
+				},
+			},
+		},
+	})
+
+	return response
+}
+
+export async function deleteUser(userId: string) {
+	await clerkClient.users.updateUserMetadata(userId, {
+		privateMetadata: {
+			role: undefined,
+		},
+	})
+	const deletedUser = await db.user.delete({ where: { id: userId } })
+
+	return deletedUser
+}
+
+export async function getUser(id: string) {
+	const user = await db.user.findUnique({
+		where: {
+			id,
+		},
+	})
+
+	return user
+}
+
+export async function sendInvitation(
+	role: Role,
+	email: string,
+	agencyId: string,
+) {
+	const response = await db.invitation.create({
+		data: { email, agencyId, role },
+	})
+
+	try {
+		const invitation = await clerkClient.invitations.createInvitation({
+			emailAddress: email,
+			redirectUrl: process.env.NEXT_PUBLIC_URL,
+			publicMetadata: {
+				throughInvitation: true,
+				role,
+			},
+		})
+	} catch (error) {
+		console.log(error)
+		throw error
+	}
 
 	return response
 }
