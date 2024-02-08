@@ -40,6 +40,7 @@ export async function saveActivityLogsNotification({
 }: { agencyId?: string; description: string; subaccountId?: string }) {
 	const authUser = await currentUser()
 	let userData: User | null | undefined
+
 	if (!authUser) {
 		const response = await db.user.findFirst({
 			where: {
@@ -68,12 +69,13 @@ export async function saveActivityLogsNotification({
 			)
 		}
 	}
+	if (subaccountId) {
+		const response = await db.subAccount.findUnique({
+			where: { id: subaccountId },
+		})
 
-	const response = await db.subAccount.findUnique({
-		where: { id: subaccountId },
-	})
-
-	if (response) foundAgencyId = response.agencyId
+		if (response) foundAgencyId = response.agencyId
+	}
 
 	if (subaccountId) {
 		await db.notification.create({
