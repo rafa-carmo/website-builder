@@ -9,6 +9,7 @@ import {
 import { getAgencyDetails } from "@/lib/queries"
 import { CheckCircleIcon } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 interface LaunchpadPageProps {
 	params: {
@@ -83,7 +84,7 @@ export default async function LaunchpadPage({
 						<div className="flex justify-between items-center w-full border p-4 roundend-lg gap-2">
 							<div className="flex md:items-center gap-4 flex-col md:!flex-row">
 								<Image
-									src={agencyDetails?.agencyLogo}
+									src={agencyDetails.agencyLogo}
 									alt="app logo"
 									width={80}
 									height={80}
@@ -97,7 +98,12 @@ export default async function LaunchpadPage({
 									className="text-primary p-2 flex-shrink-0"
 								/>
 							) : (
-								<Button>Start</Button>
+								<Link
+									className="bg-primary py-2 px-4 rounded-md text-white"
+									href={`/agency/${params.agencyId}/settings`}
+								>
+									Start
+								</Link>
 							)}
 						</div>
 					</CardContent>

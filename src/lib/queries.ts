@@ -435,3 +435,23 @@ export async function changeUserPermissions(
 		console.log("🔴Could not change persmission", error)
 	}
 }
+
+export async function getSubaccountDetails(subaccountId: string) {
+	const response = await db.subAccount.findFirst({
+		where: {
+			id: subaccountId,
+		},
+	})
+
+	return response
+}
+
+export async function deleteSubaccount(subaccountId: string) {
+	const response = await db.subAccount.delete({
+		where: {
+			id: subaccountId,
+		},
+	})
+
+	return response
+}
