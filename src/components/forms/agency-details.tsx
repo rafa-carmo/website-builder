@@ -65,7 +65,6 @@ const FormSchema = z.object({
 })
 
 export function AgencyDetails({ data }: AgencyDetailsProps) {
-	console.log(data)
 	const { toast } = useToast()
 	const router = useRouter()
 	const [deletingAgency, setDeletingAgency] = useState(false)
@@ -95,8 +94,10 @@ export function AgencyDetails({ data }: AgencyDetailsProps) {
 
 	const handleSubmit = async (values: z.infer<typeof FormSchema>) => {
 		try {
-			// let newUserData: User | undefined | null
-			// let customerId
+			//biome-ignore lint:
+			let newUserData
+			//biome-ignore lint:
+			let custId
 			if (!data?.id) {
 				const bodyData = {
 					email: values.companyEmail,
@@ -119,15 +120,25 @@ export function AgencyDetails({ data }: AgencyDetailsProps) {
 						state: values.zipCode,
 					},
 				}
+
+				const customerResponse = await fetch("/api/stripe/create-customer", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(bodyData),
+				})
+				const customerData: { customerId: string } =
+					await customerResponse.json()
+				custId = customerData.customerId
 			}
-			const newUserData = await initUser({
-				role: "AGENCY_OWNER",
-			})
-			// if (!data?.customerId) return
+
+			newUserData = await initUser({ role: "AGENCY_OWNER" })
+			if (!data?.customerId && !custId) return
 
 			const response = await upsertAgency({
 				id: data?.id ? data.id : v4(),
-				customerId: "0",
+				customerId: data?.customerId || custId || "",
 				address: values.address,
 				agencyLogo: values.agencyLogo,
 				city: values.city,
@@ -151,11 +162,10 @@ export function AgencyDetails({ data }: AgencyDetailsProps) {
 				return router.refresh()
 			}
 		} catch (error) {
-			console.error(error)
 			toast({
-				title: "Sorry",
-				description:
-					"Não foi possivel criar sua agencia no momento, favor tente novamente em alguns minutos.",
+				variant: "destructive",
+				title: "Oppse!",
+				description: "could not create your agency",
 			})
 		}
 	}
