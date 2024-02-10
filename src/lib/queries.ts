@@ -851,3 +851,17 @@ export async function deleteTicket(ticketId: string) {
 
 	return response
 }
+
+export async function getAgencySubscription(agencyId: string) {
+	const response = await db.agency.findUnique({
+		where: {
+			id: agencyId,
+		},
+		select: {
+			customerId: true,
+			Subscription: true,
+		},
+	})
+
+	return response
+}

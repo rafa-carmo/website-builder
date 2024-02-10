@@ -2,9 +2,10 @@ import { db } from "@/lib/db"
 import { stripe } from "@/lib/stripe"
 import { NextResponse } from "next/server"
 
-export default async function POST(request: Request) {
+export async function POST(request: Request) {
 	const { customerId, priceId } = await request.json()
-	if (!customerId || priceId)
+
+	if (!customerId || !priceId)
 		return new NextResponse("Customer Id or Price id is missing", {
 			status: 400,
 		})
@@ -46,10 +47,10 @@ export default async function POST(request: Request) {
 					expand: ["latest_invoice.payment_intent"],
 				},
 			)
-			return NextResponse.json({
+			return Response.json({
 				subscriptionId: subscription.id,
 				//@ts-ignore
-				clientSecret: subscription.latest_invoice.payment_intent,
+				clientSecret: subscription.latest_invoice.payment_intent.client_secret,
 			})
 			//biome-ignore lint: need a else here
 		} else {
@@ -66,10 +67,10 @@ export default async function POST(request: Request) {
 				expand: ["latest_invoice.payment_intent"],
 			})
 
-			return NextResponse.json({
+			return Response.json({
 				subscriptionId: subscription.id,
 				//@ts-ignore
-				clientSecret: subscription.latest_invoice.payment_intent,
+				clientSecret: subscription.latest_invoice.payment_intent.client_secret,
 			})
 		}
 	} catch (error) {
