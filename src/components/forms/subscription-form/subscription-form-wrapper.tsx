@@ -62,7 +62,7 @@ export function SubscriptionFormWrapper({
 				},
 			)
 			const subscriptionResponseData = await subscriptionResponse.json()
-			console.log(subscriptionResponseData)
+
 			setSubscription({
 				clientSecret: subscriptionResponseData.clientSecret,
 				subscriptionId: subscriptionResponseData.subscriptionId,
