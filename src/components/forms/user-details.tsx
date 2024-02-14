@@ -106,7 +106,6 @@ export function UserDetails({
 		},
 	})
 
-	// biome-ignore lint:
 	useEffect(() => {
 		if (!data.user) return
 		const getPermissions = async () => {
@@ -117,7 +116,6 @@ export function UserDetails({
 		getPermissions()
 	}, [data, form])
 
-	// biome-ignore lint:
 	useEffect(() => {
 		if (data.user) {
 			form.reset(data.user)

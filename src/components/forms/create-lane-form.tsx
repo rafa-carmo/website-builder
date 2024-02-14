@@ -45,7 +45,6 @@ export function CreateLaneForm({
 		},
 	})
 
-	// biome-ignore lint: Form is not update in useEffect
 	useEffect(() => {
 		if (defaultData) {
 			form.reset({

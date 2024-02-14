@@ -1,3 +1,9 @@
+import React from "react"
+
+import { db } from "@/lib/db"
+import { getConnectAccountProducts } from "@/lib/stripe/stripe-actions"
+import { Funnel } from "@prisma/client"
+
 import { FunnelForm } from "@/components/forms/funnel-form"
 import {
 	Card,
@@ -6,10 +12,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
-import { getSubaccountDetails } from "@/lib/queries"
-import { getConnectAccountProducts } from "@/lib/stripe/stripe-actions"
-import { Funnel } from "@prisma/client"
-import Stripe from "stripe"
 import { FunnelProductsTable } from "./funnel-products-table"
 
 interface FunnelSettingsProps {
@@ -17,19 +19,23 @@ interface FunnelSettingsProps {
 	defaultData: Funnel
 }
 
-export async function FunnelSettings({
-	defaultData,
+const FunnelSettings: React.FC<FunnelSettingsProps> = async ({
 	subaccountId,
-}: FunnelSettingsProps) {
-	const subaccountDetails = await getSubaccountDetails(subaccountId)
+	defaultData,
+}) => {
+	//CHALLENGE: go connect your stripe to sell products
+
+	const subaccountDetails = await db.subAccount.findUnique({
+		where: {
+			id: subaccountId,
+		},
+	})
 
 	if (!subaccountDetails) return
-	let products: Stripe.Product[] | null
-	if (subaccountDetails.connectAccountId) {
-		products = await getConnectAccountProducts(
-			subaccountDetails.connectAccountId,
-		)
-	}
+	if (!subaccountDetails.connectAccountId) return
+	const products = await getConnectAccountProducts(
+		subaccountDetails.connectAccountId,
+	)
 
 	return (
 		<div className="flex gap-4 flex-col xl:!flex-row">
@@ -43,8 +49,7 @@ export async function FunnelSettings({
 				</CardHeader>
 				<CardContent>
 					<>
-						{/* @ts-ignore */}
-						{subaccountDetails.connectAccountId && products ? (
+						{subaccountDetails.connectAccountId ? (
 							<FunnelProductsTable
 								defaultData={defaultData}
 								products={products}
@@ -60,3 +65,5 @@ export async function FunnelSettings({
 		</div>
 	)
 }
+
+export default FunnelSettings

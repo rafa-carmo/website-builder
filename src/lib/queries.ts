@@ -956,3 +956,24 @@ export async function deleteFunnelPage(funnelPageId: string) {
 
 	return response
 }
+
+export async function getFunnelPage(funnelPageId: string) {
+	const response = await db.funnelPage.findUnique({
+		where: {
+			id: funnelPageId,
+		},
+	})
+
+	return response
+}
+
+export async function upsertContact(
+	contact: Prisma.ContactUncheckedCreateInput,
+) {
+	const response = await db.contact.upsert({
+		where: { id: contact.id || v4() },
+		update: contact,
+		create: contact,
+	})
+	return response
+}

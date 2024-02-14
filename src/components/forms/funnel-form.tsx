@@ -45,7 +45,6 @@ export function FunnelForm({ subAccountId, defaultData }: FunnelFormProps) {
 		},
 	})
 
-	//biome-ignore lint:
 	useEffect(() => {
 		if (defaultData) {
 			form.reset({

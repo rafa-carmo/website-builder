@@ -44,7 +44,6 @@ export function SubscriptionFormWrapper({
 		[subscription],
 	)
 
-	// biome-ignore lint:
 	useEffect(() => {
 		if (!selectedPriceId) return
 		const createSecret = async () => {

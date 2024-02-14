@@ -16,18 +16,18 @@ import {
 import { Funnel } from "@prisma/client"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import React, { useState } from "react"
 import Stripe from "stripe"
 
-interface FunnelProductsTable {
+interface FunnelProductsTableProps {
 	defaultData: Funnel
 	products: Stripe.Product[]
 }
 
-export function FunnelProductsTable({
-	defaultData,
+const FunnelProductsTable: React.FC<FunnelProductsTableProps> = ({
 	products,
-}: FunnelProductsTable) {
+	defaultData,
+}) => {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [liveProducts, setLiveProducts] = useState<
@@ -138,3 +138,5 @@ export function FunnelProductsTable({
 		</>
 	)
 }
+
+export default FunnelProductsTable

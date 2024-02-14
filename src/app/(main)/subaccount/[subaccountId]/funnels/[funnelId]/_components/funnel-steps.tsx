@@ -1,71 +1,73 @@
 "use client"
-import { CreateFunnelPage } from "@/components/forms/create-funnel-page"
+
 import { CustomModal } from "@/components/global/custom-modal"
-import FunnelPagePlaceholder from "@/components/icons/funnel-page-placeholder"
 import { AlertDialog } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import {
-	Card,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { toast } from "@/components/ui/use-toast"
 import { upsertFunnelPage } from "@/lib/queries"
+import { FunnelsForSubAccount } from "@/lib/types"
 import { useModal } from "@/providers/modal-provider"
-import { Funnel, FunnelPage } from "@prisma/client"
-import { Check, ExternalLink, LucideEdit, Plus } from "lucide-react"
+import { FunnelPage } from "@prisma/client"
+import { Check, ExternalLink, LucideEdit } from "lucide-react"
+import React, { useState } from "react"
+
+import FunnelPagePlaceholder from "@/components/icons/funnel-page-placeholder"
 import Link from "next/link"
-import { useState } from "react"
 import {
 	DragDropContext,
 	DragStart,
 	DropResult,
 	Droppable,
 } from "react-beautiful-dnd"
+
+import { CreateFunnelPage } from "@/components/forms/create-funnel-page"
+import {
+	Card,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card"
 import { FunnelStepCard } from "./funnel-step-card"
 
-interface FunnelStepsProps {
-	funnelId: string
+type Props = {
+	funnel: FunnelsForSubAccount
 	subaccountId: string
-	funnel: Funnel
 	pages: FunnelPage[]
+	funnelId: string
 }
 
-export function FunnelSteps({
-	funnel,
-	funnelId,
-	pages,
-	subaccountId,
-}: FunnelStepsProps) {
-	const { setOpen } = useModal()
+const FunnelSteps = ({ funnel, funnelId, pages, subaccountId }: Props) => {
 	const [clickedPage, setClickedPage] = useState<FunnelPage | undefined>(
 		pages[0],
 	)
-
+	const { setOpen } = useModal()
 	const [pagesState, setPagesState] = useState(pages)
-
 	const onDragStart = (event: DragStart) => {
+		//current chosen page
 		const { draggableId } = event
 		const value = pagesState.find((page) => page.id === draggableId)
 	}
 
-	const onDragEnd = (event: DropResult) => {
-		const { destination, source } = event
+	const onDragEnd = (dropResult: DropResult) => {
+		const { destination, source } = dropResult
+
+		//no destination or same position
 		if (
 			!destination ||
 			(destination.droppableId === source.droppableId &&
 				destination.index === source.index)
-		)
+		) {
 			return
-
+		}
+		//change state
 		const newPageOrder = [...pagesState]
 			.toSpliced(source.index, 1)
 			.toSpliced(destination.index, 0, pagesState[source.index])
-			.map((page, index) => {
-				return { ...page, order: index }
+			.map((page, idx) => {
+				return { ...page, order: idx }
 			})
+
 		setPagesState(newPageOrder)
 		newPageOrder.forEach(async (page, index) => {
 			try {
@@ -79,15 +81,16 @@ export function FunnelSteps({
 					funnelId,
 				)
 			} catch (error) {
-				console.error(error)
+				console.log(error)
 				toast({
 					variant: "destructive",
-					title: "Sorry",
-					description: "Sorry, its not possible move page now",
+					title: "Failed",
+					description: "Could not save page order",
 				})
 				return
 			}
 		})
+
 		toast({
 			title: "Success",
 			description: "Saved page order",
@@ -96,8 +99,8 @@ export function FunnelSteps({
 
 	return (
 		<AlertDialog>
-			<div className="flex border-[1px] lg:!flex-row flex-col">
-				<aside className="flex-[0.3] bg-background p-6 flex flex-col justify-between">
+			<div className="flex border-[1px] lg:!flex-row flex-col ">
+				<aside className="flex-[0.3] bg-background p-6  flex flex-col justify-between ">
 					<ScrollArea className="h-full ">
 						<div className="flex gap-4 items-center">
 							<Check />
@@ -113,18 +116,17 @@ export function FunnelSteps({
 									{(provided) => (
 										<div {...provided.droppableProps} ref={provided.innerRef}>
 											{pagesState.map((page, idx) => (
-												// biome-ignore lint:
 												<div
 													className="relative"
 													key={page.id}
 													onClick={() => setClickedPage(page)}
 												>
-													<FunnelStepCard
+													{/* <FunnelStepCard
 														funnelPage={page}
 														index={idx}
 														key={page.id}
 														activePage={page.id === clickedPage?.id}
-													/>
+													/> */}
 												</div>
 											))}
 										</div>
@@ -158,7 +160,7 @@ export function FunnelSteps({
 					</Button>
 				</aside>
 				<aside className="flex-[0.7] bg-muted p-4 ">
-					{pages.length > 0 ? (
+					{pages.length ? (
 						<Card className="h-full flex justify-between flex-col">
 							<CardHeader>
 								<p className="text-sm text-muted-foreground">Page name</p>
@@ -211,3 +213,5 @@ export function FunnelSteps({
 		</AlertDialog>
 	)
 }
+
+export default FunnelSteps

@@ -24,6 +24,5 @@ export function DeleteButton({ subaccountId }: DeleteButtonProps) {
 		router.refresh()
 	}
 
-	//biome-ignore lint: this have to be a div because button is before with shadcn
 	return <div onClick={handleClick}>Delete</div>
 }

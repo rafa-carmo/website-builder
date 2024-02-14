@@ -94,7 +94,6 @@ export function CreateTicketForm({
 		}
 	}, [subaccountId])
 
-	// biome-ignore lint: form not will validate
 	useEffect(() => {
 		if (defaultData.ticket) {
 			form.reset({

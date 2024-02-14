@@ -42,7 +42,6 @@ export function CreatePipelineForm({
 		},
 	})
 
-	//biome-ignore lint: form is not a dependencie to reload
 	useEffect(() => {
 		if (defaultData) {
 			form.reset({

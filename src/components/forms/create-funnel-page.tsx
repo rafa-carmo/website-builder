@@ -60,7 +60,6 @@ export function CreateFunnelPage({
 		},
 	})
 
-	// biome-ignore lint:
 	useEffect(() => {
 		if (defaultData) {
 			form.reset({ name: defaultData.name, pathName: defaultData.pathName })

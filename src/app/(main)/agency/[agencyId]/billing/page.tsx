@@ -10,8 +10,8 @@ import {
 import { addOnProducts, pricingCards } from "@/lib/constants"
 import { getAgencySubscription } from "@/lib/queries"
 import { stripe } from "@/lib/stripe"
-import { PricingCard } from "./_components/pricing-card"
 import clsx from "clsx"
+import { PricingCard } from "./_components/pricing-card"
 
 interface BillingPageProps {
 	params: {
