@@ -10,7 +10,6 @@ import { FunnelsForSubAccount } from "@/lib/types"
 import { useModal } from "@/providers/modal-provider"
 import { FunnelPage } from "@prisma/client"
 import { Check, ExternalLink, LucideEdit } from "lucide-react"
-import React, { useState } from "react"
 
 import FunnelPagePlaceholder from "@/components/icons/funnel-page-placeholder"
 import Link from "next/link"
@@ -28,16 +27,22 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { useState } from "react"
 import { FunnelStepCard } from "./funnel-step-card"
 
-type Props = {
+type FunnelStepsProps = {
 	funnel: FunnelsForSubAccount
 	subaccountId: string
 	pages: FunnelPage[]
 	funnelId: string
 }
 
-const FunnelSteps = ({ funnel, funnelId, pages, subaccountId }: Props) => {
+export function FunnelSteps({
+	funnel,
+	funnelId,
+	pages,
+	subaccountId,
+}: FunnelStepsProps) {
 	const [clickedPage, setClickedPage] = useState<FunnelPage | undefined>(
 		pages[0],
 	)
@@ -121,12 +126,12 @@ const FunnelSteps = ({ funnel, funnelId, pages, subaccountId }: Props) => {
 													key={page.id}
 													onClick={() => setClickedPage(page)}
 												>
-													{/* <FunnelStepCard
+													<FunnelStepCard
 														funnelPage={page}
 														index={idx}
 														key={page.id}
 														activePage={page.id === clickedPage?.id}
-													/> */}
+													/>
 												</div>
 											))}
 										</div>
@@ -213,5 +218,3 @@ const FunnelSteps = ({ funnel, funnelId, pages, subaccountId }: Props) => {
 		</AlertDialog>
 	)
 }
-
-export default FunnelSteps

@@ -1,17 +1,20 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { FunnelPage } from "@prisma/client"
 import { ArrowDown, Mail } from "lucide-react"
-import React from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { createPortal } from "react-dom"
 
-type Props = {
+type FunnelStepCardProps = {
 	funnelPage: FunnelPage
 	index: number
 	activePage: boolean
 }
 
-const FunnelStepCard = ({ activePage, funnelPage, index }: Props) => {
+export function FunnelStepCard({
+	activePage,
+	funnelPage,
+	index,
+}: FunnelStepCardProps) {
 	const portal = document.getElementById("blur-page")
 
 	return (
@@ -59,5 +62,3 @@ const FunnelStepCard = ({ activePage, funnelPage, index }: Props) => {
 		</Draggable>
 	)
 }
-
-export default FunnelStepCard

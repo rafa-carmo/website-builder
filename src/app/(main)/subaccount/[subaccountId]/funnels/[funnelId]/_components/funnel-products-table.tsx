@@ -24,10 +24,10 @@ interface FunnelProductsTableProps {
 	products: Stripe.Product[]
 }
 
-const FunnelProductsTable: React.FC<FunnelProductsTableProps> = ({
+export function FunnelProductsTable({
 	products,
 	defaultData,
-}) => {
+}: FunnelProductsTableProps) {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [liveProducts, setLiveProducts] = useState<

@@ -1,5 +1,4 @@
 import { EditorBtns } from "@/lib/constants"
-import { Youtube } from "lucide-react"
 import Image from "next/image"
 
 const CheckoutPlaceholder = () => {

@@ -1,6 +1,7 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { getFunnelPageDetails } from "@/lib/queries"
+
+import { getFunnelPage } from "@/lib/queries"
 import { useEditor } from "@/providers/editor/editor-provider"
 import clsx from "clsx"
 import { EyeOff } from "lucide-react"
@@ -24,7 +25,7 @@ const FunnelEditor = ({ funnelPageId, liveMode }: Props) => {
 	//CHALLENGE: make this more performant
 	useEffect(() => {
 		const fetchData = async () => {
-			const response = await getFunnelPageDetails(funnelPageId)
+			const response = await getFunnelPage(funnelPageId)
 			if (!response) return
 
 			dispatch({

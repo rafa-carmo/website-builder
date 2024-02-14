@@ -19,12 +19,10 @@ interface FunnelSettingsProps {
 	defaultData: Funnel
 }
 
-const FunnelSettings: React.FC<FunnelSettingsProps> = async ({
+export default async function FunnelSettings({
 	subaccountId,
 	defaultData,
-}) => {
-	//CHALLENGE: go connect your stripe to sell products
-
+}: FunnelSettingsProps) {
 	const subaccountDetails = await db.subAccount.findUnique({
 		where: {
 			id: subaccountId,
@@ -65,5 +63,3 @@ const FunnelSettings: React.FC<FunnelSettingsProps> = async ({
 		</div>
 	)
 }
-
-export default FunnelSettings

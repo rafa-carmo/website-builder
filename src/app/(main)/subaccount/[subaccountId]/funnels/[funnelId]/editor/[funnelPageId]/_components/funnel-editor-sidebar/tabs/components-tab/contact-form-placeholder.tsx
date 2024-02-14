@@ -1,6 +1,5 @@
 import { EditorBtns } from "@/lib/constants"
 import { Contact2Icon } from "lucide-react"
-import React from "react"
 
 const ContactFormComponentPlaceholder = () => {
 	const handleDragStart = (e: React.DragEvent, type: EditorBtns) => {
