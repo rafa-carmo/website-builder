@@ -14,7 +14,8 @@ bun dev
 
 ### Same pictures for example:
 ![Captura de tela de 2024-02-16 14-46-53](https://github.com/rafa-carmo/website-builder/assets/12972960/b5dc7d95-f937-44ff-b04c-26052476d0c7)
-![Captura de tela de 2024-02-16 14-46-53](https://github.com/rafa-carmo/website-builder/assets/12972960/1349d354-5f84-46c9-b421-8dea22f16ec1)
+![Captura de tela de 2024-02-16 15-19-34](https://github.com/rafa-carmo/website-builder/assets/12972960/c1f313ae-23c8-400b-b87c-3ff5b60bac1c)
+
 
 
 
