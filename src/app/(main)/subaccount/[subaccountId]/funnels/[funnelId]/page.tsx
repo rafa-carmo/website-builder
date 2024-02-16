@@ -5,13 +5,13 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import React from "react"
 import FunnelSettings from "./_components/funnel-settings"
-import FunnelSteps from "./_components/funnel-steps"
+import { FunnelSteps } from "./_components/funnel-steps"
 
-type Props = {
+type FunnelPageProps = {
 	params: { funnelId: string; subaccountId: string }
 }
 
-const FunnelPage = async ({ params }: Props) => {
+export default async function FunnelPage({ params }: FunnelPageProps) {
 	const funnelPages = await getFunnel(params.funnelId)
 	if (!funnelPages)
 		return redirect(`/subaccount/${params.subaccountId}/funnels`)
@@ -48,5 +48,3 @@ const FunnelPage = async ({ params }: Props) => {
 		</BlurPage>
 	)
 }
-
-export default FunnelPage

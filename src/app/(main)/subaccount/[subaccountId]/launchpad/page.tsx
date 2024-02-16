@@ -7,7 +7,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card"
+import { db } from "@/lib/db"
 import { getSubaccountDetails } from "@/lib/queries"
+import { stripe } from "@/lib/stripe"
+import { getStripeOAuthLink } from "@/lib/utils"
 import { CheckCircleIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -38,7 +41,30 @@ export default async function LaunchpadPage({
 		subaccountDetails.name &&
 		subaccountDetails.state
 
-	// Wire up stripe
+	let connectedStripeAccount = false
+
+	const stripeOAuthLink = getStripeOAuthLink(
+		"subaccount",
+		`launchpad___${subaccountDetails.id}`,
+	)
+
+	if (searchParams.code) {
+		if (!subaccountDetails.connectAccountId) {
+			try {
+				const response = await stripe.oauth.token({
+					grant_type: "authorization_code",
+					code: searchParams.code,
+				})
+				await db.subAccount.update({
+					where: { id: params.subaccountId },
+					data: { connectAccountId: response.stripe_user_id },
+				})
+				connectedStripeAccount = true
+			} catch (error) {
+				console.log("🔴 Could not connect stripe account", error)
+			}
+		}
+	}
 
 	return (
 		<BlurPage>
@@ -79,6 +105,20 @@ export default async function LaunchpadPage({
 										used to run payouts.
 									</p>
 								</div>
+								{subaccountDetails.connectAccountId ||
+								connectedStripeAccount ? (
+									<CheckCircleIcon
+										size={50}
+										className=" text-primary p-2 flex-shrink-0"
+									/>
+								) : (
+									<Link
+										className="bg-primary py-2 px-4 rounded-md text-white"
+										href={stripeOAuthLink}
+									>
+										Start
+									</Link>
+								)}
 							</div>
 							<div className="flex justify-between items-center w-full h-20 border p-4 rounded-lg">
 								<div className="flex items-center gap-4">

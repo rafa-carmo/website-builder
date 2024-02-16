@@ -977,3 +977,27 @@ export async function upsertContact(
 	})
 	return response
 }
+
+export async function getDomainContent(subDomainName: string) {
+	const response = await db.funnel.findUnique({
+		where: {
+			subDomainName,
+		},
+		include: { FunnelPages: true },
+	})
+
+	return response
+}
+
+export async function incrementVisitantPage(pageId: string) {
+	await db.funnelPage.update({
+		where: {
+			id: pageId,
+		},
+		data: {
+			visits: {
+				increment: 1,
+			},
+		},
+	})
+}
